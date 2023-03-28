@@ -16,7 +16,8 @@ async function seed() {
   await Book.create({
     title: 'The AI-AI',
     description: 'by Patterson',
-    status: true
+    status: true,
+    url: true
   });
 
   console.log('"The AI-AI" was added');
@@ -24,7 +25,8 @@ async function seed() {
   await Book.create({
     title: 'Advanced Design',
     description: 'by Darshon',
-    status: true
+    status: true,
+    url: true
   });
 
   console.log('"Advanced Design" was added');
@@ -32,7 +34,8 @@ async function seed() {
   await Book.create({
     title: 'Hello TA',
     description: 'by Laurence',
-    status: true
+    status: true,
+    url: true
   });
 
   console.log('"Hello TA" was added');
