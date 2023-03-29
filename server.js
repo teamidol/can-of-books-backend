@@ -9,6 +9,15 @@ const cors = require('cors');
 // *** REQUIRE IN OUR MONGOOSE LIBRARY ***
 const mongoose = require('mongoose');
 
+mongoose.connect(process.env.DB_URL);
+
+// *** this section is not needed, it's only for developer troubleshooting
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error'));
+db.once('open', function () {
+  console.log('Mongoose is connected');
+});
+
 // **** BRING IN MY BOOK MODEL ****
 const Book = require('./models/book.js');
 
@@ -16,6 +25,10 @@ const app = express();
 
 // middleware
 app.use(cors());
+
+// DON'T FORGET TO BRING THIS IN!!!!!
+app.use(express.json());
+
 
 // define PORT validate env is working
 const PORT = process.env.PORT || 3002;
@@ -26,14 +39,6 @@ app.listen(PORT, () => console.log(`listening on Port ${PORT}`));
 // **** CONNECT MONGODB USING MONGOOSE ***
 // *** PER THE MONGOOSE DOCS - PLUG AND PLAY CODE ****
 
-mongoose.connect(process.env.DB_URL);
-
-// *** HELPFUL FOR TROUBLESHOOTING IN TERMINAL WHY YOU CAN'T CONNECT TO YOUR MONGODB ***
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function () {
-  console.log('Mongoose is connected');
-});
 
 // ENDPOINTS
 app.get('/', (request, response) => {
@@ -57,8 +62,43 @@ async function getBooks(request, response, next){
 }
 
 
+// **** ENDPOINT TO DELETE A CAT FROM MY DATABASE *****
+// ! we must have path parameter
+// ! path parameter is going to be set with a variable to capture the ID
+// ! we use ':' to signify that it is a path parameter
+
+app.delete('/books/:bookID', deleteBook);
+
+async function deleteBook(request,response,next){
+  try {
+    let id = request.params.bookID;
+    
+    await Book.findByIdAndDelete(id);
+    
+    response.status(200).send('Book Deleted!');
+  } catch (error) {
+    next(error);
+  }
+}
+
+// **** ENDPOINT TO ADD A CAT *****
+
+app.post('/books', postBook);
+
+async function postBook(request, response,next){
+  try {
+    let createdBook = await Book.create(request.body);
+    // !!! DON'T FORGET THAT MIDDLEWARE ^ ^ ^ ^(line 22)
+    
+    response.status(201).send(createdBook);
+  } catch (error) {
+    next(error);
+  }
+}
+
+
 app.get('*', (request, response) => {
-  response.status(404).send('Not availabe');
+  response.status(404).send('Not available');
 });
 
 // ERROR
