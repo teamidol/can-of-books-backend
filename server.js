@@ -29,7 +29,6 @@ app.use(cors());
 // DON'T FORGET TO BRING THIS IN!!!!!
 app.use(express.json());
 
-
 // define PORT validate env is working
 const PORT = process.env.PORT || 3002;
 
@@ -38,7 +37,6 @@ app.listen(PORT, () => console.log(`listening on Port ${PORT}`));
 
 // **** CONNECT MONGODB USING MONGOOSE ***
 // *** PER THE MONGOOSE DOCS - PLUG AND PLAY CODE ****
-
 
 // ENDPOINTS
 app.get('/', (request, response) => {
@@ -60,7 +58,6 @@ async function getBooks(request, response, next){
     next(error);
   }
 }
-
 
 // **** ENDPOINT TO DELETE A CAT FROM MY DATABASE *****
 // ! we must have path parameter
