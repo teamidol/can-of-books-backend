@@ -97,9 +97,35 @@ async function postBook(request, response,next){
 }
 
 
+// *** ENDPOINT TO UPDATE A CAT ****
+app.put('/books/:bookID', updateBook);
+
+async function updateBook(request, response, next){
+  try {
+
+    // ID - the cat to update, DATA - the information to update the cat with
+    let id = request.params.bookID;
+    let data = request.body;
+
+    // ! 3 Args
+    // ! 1st - is the id
+    // ! 2nd - data
+    // ! 3rd - options object { new: true, overwrite: true }
+
+    const updatedBook = await Book.findByIdAndUpdate(id, data, { new: true, overwrite: true } );
+
+    response.status(200).send(updatedBook);
+
+  } catch (error) {
+    next(error);
+  }
+}
+
+
 app.get('*', (request, response) => {
   response.status(404).send('Not available');
 });
+
 
 // ERROR
 app.use((error, request, response, next) => {
